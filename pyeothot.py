@@ -61,6 +61,7 @@ def main():
     #  Connect to GNU Radio and subscribe to stream
     sock.connect("tcp://localhost:5555")
     sock.setsockopt(zmq.SUBSCRIBE, b'')
+    print("Connceted. Waiting for a train....")
 
     while True:
         newData = sock.recv()  # get whatever data are available
