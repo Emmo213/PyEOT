@@ -13,7 +13,7 @@ This class decodes and verifies an HOT packet.
 """
 
 
-class HOT_decode():
+class hot_decode():
 
     def __init__(self, buffer):  # 01010101 = status req, 10101010 = emergency
 

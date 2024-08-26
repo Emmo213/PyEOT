@@ -18,8 +18,8 @@ purpose:    Receives demodulated FFSK bitstream from GNU Radio, indentifes
 
 import datetime
 import collections
-from eot_decoder import EOT_decode
-from hot_decoder import HOT_decode
+from eot_decoder import eot_decode
+from hot_decoder import hot_decode
 import zmq
 
 # Socket to talk to server
@@ -62,6 +62,8 @@ def main():
     sock.connect("tcp://localhost:5555")
     sock.setsockopt(zmq.SUBSCRIBE, b'')
 
+    print("Connected. Waiting for a train....")
+
     while True:
         newData = sock.recv()  # get whatever data are available
         for byte in newData:
@@ -72,12 +74,12 @@ def main():
                 buffer += bit
 
             if (buffer.find('10101011100010010') == 0):  # look for frame sync
-                EOT = EOT_decode(buffer[6:])  # first 6 bits are bit sync
+                EOT = eot_decode(buffer[6:])  # first 6 bits are bit sync
                 if (EOT.valid):
                     printEOT(EOT)
 
             if (buffer.find('010101100011110001000100101001') == 0):
-                HOT = HOT_decode(buffer[6:])
+                HOT = hot_decode(buffer[6:])
                 if (HOT.valid):
                     printHOT(HOT)
 

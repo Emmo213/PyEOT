@@ -17,12 +17,12 @@ purpose:    Class to parse EOT packet and generate BCH checkbits
 import helpers
 
 
-class EOT_decode():
+class eot_decode():
     def __init__(self, buffer):
         self.packet = buffer[0:74]
         self.frame_sync = self.packet[0:11]
         self.data_block = self.packet[11:56]
-        self.batt_cond = (self.packet[13:15][::-1])
+        self.batt_cond = self.packet[13:15][::-1]
         self.message_type = self.packet[15:18]
         self.unit_addr = int((self.packet[18:35][::-1]), 2)
         self.pressure = int((self.packet[35:42][::-1]), 2)
@@ -43,8 +43,8 @@ class EOT_decode():
                                "00": "Not Monitored"}
         self.batt_cond_text = self.batt_cond_dict[self.batt_cond]
 
-        if (self.message_type == "111"):
-            if (self.conf_ind == "0"):
+        if self.message_type == "111":
+            if self.conf_ind == "0":
                 self.arm_status = "Arming"
             else:
                 self.arm_status = "Armed"
@@ -56,7 +56,7 @@ class EOT_decode():
         self.data_block = helpers.reverse(self.data_block)
         self.checkbits = helpers.checkbits(self.data_block, self.generator)
         self.checkbits_cipher = helpers.xor(self.checkbits, self.cipher_key)
-        self.valid = (self.checkbits_cipher == self.checkbitsRx)  # a match?
+        self.valid = self.checkbits_cipher == self.checkbitsRx  # a match?
 
     def get_packet(self):
         return ''.join(self.packet)
